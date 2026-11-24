@@ -1,0 +1,806 @@
+{
+ "idea": {
+  "src": "assets/audio/react-2210.03629/idea.mp3",
+  "dur": 66.269,
+  "scenes": [
+   {
+    "start": 0.35,
+    "end": 8.183,
+    "beats": [
+     0.0,
+     3.947
+    ]
+   },
+   {
+    "start": 8.183,
+    "end": 21.711,
+    "beats": [
+     0.0,
+     1.685,
+     5.163,
+     9.152
+    ]
+   },
+   {
+    "start": 21.711,
+    "end": 36.093,
+    "beats": [
+     0.0,
+     3.861,
+     9.515
+    ]
+   },
+   {
+    "start": 36.093,
+    "end": 47.318,
+    "beats": [
+     0.0,
+     3.136,
+     4.587,
+     5.995,
+     8.064
+    ]
+   },
+   {
+    "start": 47.318,
+    "end": 58.735,
+    "beats": [
+     0.0,
+     5.397,
+     7.957
+    ]
+   },
+   {
+    "start": 58.735,
+    "end": 66.269,
+    "beats": [
+     0.0,
+     2.901,
+     5.205
+    ]
+   }
+  ],
+  "cues": [
+   {
+    "t0": 0.35,
+    "t1": 3.977,
+    "text": "Here's a paper that shaped a lot of the AI agents you use today."
+   },
+   {
+    "t0": 4.297,
+    "t1": 7.113,
+    "text": "It's called ReAct: short for Reason, plus Act."
+   },
+   {
+    "t0": 8.183,
+    "t1": 9.548,
+    "text": "Picture yourself cooking."
+   },
+   {
+    "t0": 9.868,
+    "t1": 13.025,
+    "text": "You think: everything is chopped, so now I boil the water."
+   },
+   {
+    "t0": 13.345,
+    "t1": 17.015,
+    "text": "You hit a problem: no salt, so you grab soy sauce instead."
+   },
+   {
+    "t0": 17.335,
+    "t1": 20.641,
+    "text": "And when you're stuck, you act. You open a recipe and look it up."
+   },
+   {
+    "t0": 21.711,
+    "t1": 25.253,
+    "text": "In twenty twenty-two, language models did one or the other."
+   },
+   {
+    "t0": 25.573,
+    "t1": 30.906,
+    "text": "Chain-of-thought models reasoned, but only from memory, so they could confidently invent facts."
+   },
+   {
+    "t0": 31.226,
+    "t1": 35.023,
+    "text": "Acting models searched and clicked, but never stopped to think about the goal."
+   },
+   {
+    "t0": 36.093,
+    "t1": 38.909,
+    "text": "ReAct simply lets the model do both, in turns."
+   },
+   {
+    "t0": 39.229,
+    "t1": 40.36,
+    "text": "It writes a thought,"
+   },
+   {
+    "t0": 40.68,
+    "t1": 41.768,
+    "text": "takes an action,"
+   },
+   {
+    "t0": 42.088,
+    "t1": 43.837,
+    "text": "reads what the world sends back,"
+   },
+   {
+    "t0": 44.157,
+    "t1": 46.248,
+    "text": "and thinks again, until it can answer."
+   },
+   {
+    "t0": 47.318,
+    "t1": 52.395,
+    "text": "The result? On a household game, it beat specially trained agents by thirty-four points."
+   },
+   {
+    "t0": 52.715,
+    "t1": 54.955,
+    "text": "On a shopping website, by ten points."
+   },
+   {
+    "t0": 55.275,
+    "t1": 57.665,
+    "text": "And it learned from only one or two examples."
+   },
+   {
+    "t0": 58.735,
+    "t1": 61.316,
+    "text": "So remember this: reasoning guides action,"
+   },
+   {
+    "t0": 61.636,
+    "t1": 63.62,
+    "text": "and action keeps reasoning honest."
+   },
+   {
+    "t0": 63.94,
+    "t1": 65.199,
+    "text": "Let's see how it works."
+   }
+  ]
+ },
+ "method": {
+  "src": "assets/audio/react-2210.03629/method.mp3",
+  "dur": 57.924,
+  "scenes": [
+   {
+    "start": 0.35,
+    "end": 3.959,
+    "beats": [
+     0.0
+    ]
+   },
+   {
+    "start": 3.959,
+    "end": 19.002,
+    "beats": [
+     0.0,
+     4.693,
+     8.533
+    ]
+   },
+   {
+    "start": 19.002,
+    "end": 33.768,
+    "beats": [
+     0.0,
+     1.984,
+     5.76,
+     10.091
+    ]
+   },
+   {
+    "start": 33.768,
+    "end": 43.627,
+    "beats": [
+     0.0,
+     1.856,
+     3.776,
+     5.419,
+     7.296
+    ]
+   },
+   {
+    "start": 43.627,
+    "end": 57.924,
+    "beats": [
+     0.0,
+     1.899,
+     7.125,
+     9.664
+    ]
+   }
+  ],
+  "cues": [
+   {
+    "t0": 0.35,
+    "t1": 2.889,
+    "text": "Let's open the hood. It's simpler than you'd think."
+   },
+   {
+    "t0": 3.959,
+    "t1": 8.332,
+    "text": "Think of an agent, talking to an environment, like Wikipedia or a game."
+   },
+   {
+    "t0": 8.652,
+    "t1": 12.172,
+    "text": "At each step, it sends an action, and gets an observation back."
+   },
+   {
+    "t0": 12.492,
+    "t1": 17.932,
+    "text": "The trouble is: picking the right action sometimes needs real thinking, and there's nowhere to do it."
+   },
+   {
+    "t0": 19.002,
+    "t1": 20.666,
+    "text": "ReAct's fix is one line."
+   },
+   {
+    "t0": 20.986,
+    "t1": 24.442,
+    "text": "Take the usual set of actions, and add all of language to it."
+   },
+   {
+    "t0": 24.762,
+    "t1": 28.773,
+    "text": "A thought becomes just another action, but one that doesn't touch the world."
+   },
+   {
+    "t0": 29.093,
+    "t1": 32.698,
+    "text": "It's only written into the model's context, like a note to self."
+   },
+   {
+    "t0": 33.768,
+    "t1": 35.304,
+    "text": "Thoughts can do many jobs."
+   },
+   {
+    "t0": 35.624,
+    "t1": 37.224,
+    "text": "They break a goal into a plan,"
+   },
+   {
+    "t0": 37.544,
+    "t1": 38.867,
+    "text": "bring in common sense,"
+   },
+   {
+    "t0": 39.187,
+    "t1": 40.744,
+    "text": "recover when a search fails,"
+   },
+   {
+    "t0": 41.064,
+    "t1": 42.557,
+    "text": "and keep track of progress."
+   },
+   {
+    "t0": 43.627,
+    "t1": 45.206,
+    "text": "And there's no training at all."
+   },
+   {
+    "t0": 45.526,
+    "t1": 50.433,
+    "text": "A frozen model sees a few examples written by humans, and continues the pattern."
+   },
+   {
+    "t0": 50.753,
+    "t1": 52.971,
+    "text": "For questions, it thinks at every step."
+   },
+   {
+    "t0": 53.291,
+    "t1": 56.854,
+    "text": "For long tasks, it decides for itself when a thought is worth it."
+   }
+  ]
+ },
+ "demo": {
+  "src": "assets/audio/react-2210.03629/demo.mp3",
+  "dur": 50.013,
+  "scenes": [
+   {
+    "start": 0.35,
+    "end": 3.703,
+    "beats": [
+     0.0
+    ]
+   },
+   {
+    "start": 3.703,
+    "end": 15.461,
+    "beats": [
+     0.0,
+     6.592
+    ]
+   },
+   {
+    "start": 15.461,
+    "end": 25.085,
+    "beats": [
+     0.0,
+     2.176
+    ]
+   },
+   {
+    "start": 25.085,
+    "end": 33.601,
+    "beats": [
+     0.0,
+     2.688
+    ]
+   },
+   {
+    "start": 33.601,
+    "end": 44.228,
+    "beats": [
+     0.0,
+     2.453,
+     5.461
+    ]
+   },
+   {
+    "start": 44.228,
+    "end": 50.013,
+    "beats": [
+     0.0,
+     1.707
+    ]
+   }
+  ],
+  "cues": [
+   {
+    "t0": 0.35,
+    "t1": 2.633,
+    "text": "Let's replay the paper's favourite example."
+   },
+   {
+    "t0": 3.703,
+    "t1": 9.975,
+    "text": "The question: aside from the Apple Remote, what other device can control the program it was designed for?"
+   },
+   {
+    "t0": 10.295,
+    "t1": 14.391,
+    "text": "It needs two hops: find the program, then find what else controls it."
+   },
+   {
+    "t0": 15.461,
+    "t1": 17.317,
+    "text": "Chain-of-thought answers from memory."
+   },
+   {
+    "t0": 17.637,
+    "t1": 24.015,
+    "text": "It assumes the remote was made for Apple TV. That's false, and every step after inherits the mistake."
+   },
+   {
+    "t0": 25.085,
+    "t1": 27.453,
+    "text": "Acting alone does find the right pages."
+   },
+   {
+    "t0": 27.773,
+    "t1": 32.531,
+    "text": "But with no thinking in between, it can't pull out the answer, and finishes with: yes."
+   },
+   {
+    "t0": 33.601,
+    "t1": 35.734,
+    "text": "ReAct plans first, then searches."
+   },
+   {
+    "t0": 36.054,
+    "t1": 38.742,
+    "text": "When a search fails, a thought fixes the query."
+   },
+   {
+    "t0": 39.062,
+    "t1": 43.158,
+    "text": "And the last thought pulls out the answer: keyboard function keys. Correct."
+   },
+   {
+    "t0": 44.228,
+    "t1": 45.615,
+    "text": "Thoughts aim the actions."
+   },
+   {
+    "t0": 45.935,
+    "t1": 48.943,
+    "text": "Observations correct the thoughts. That's the whole trick."
+   }
+  ]
+ },
+ "knowledge": {
+  "src": "assets/audio/react-2210.03629/knowledge.mp3",
+  "dur": 65.479,
+  "scenes": [
+   {
+    "start": 0.35,
+    "end": 5.26,
+    "beats": [
+     0.0
+    ]
+   },
+   {
+    "start": 5.26,
+    "end": 15.887,
+    "beats": [
+     0.0,
+     4.395,
+     5.867,
+     8.149
+    ]
+   },
+   {
+    "start": 15.887,
+    "end": 26.685,
+    "beats": [
+     0.0,
+     5.461,
+     7.211
+    ]
+   },
+   {
+    "start": 26.685,
+    "end": 40.619,
+    "beats": [
+     0.0,
+     2.453,
+     5.952
+    ]
+   },
+   {
+    "start": 40.619,
+    "end": 52.463,
+    "beats": [
+     0.0,
+     1.877,
+     3.925,
+     6.165
+    ]
+   },
+   {
+    "start": 52.463,
+    "end": 65.479,
+    "beats": [
+     0.0,
+     4.501
+    ]
+   }
+  ],
+  "cues": [
+   {
+    "t0": 0.35,
+    "t1": 4.19,
+    "text": "Now, the numbers. First: question answering, and fact checking."
+   },
+   {
+    "t0": 5.26,
+    "t1": 9.335,
+    "text": "The model gets a deliberately weak Wikipedia tool, with three actions."
+   },
+   {
+    "t0": 9.655,
+    "t1": 10.807,
+    "text": "Search for a page,"
+   },
+   {
+    "t0": 11.127,
+    "t1": 13.089,
+    "text": "look up a word, like control F,"
+   },
+   {
+    "t0": 13.409,
+    "t1": 14.817,
+    "text": "and finish with an answer."
+   },
+   {
+    "t0": 15.887,
+    "t1": 21.029,
+    "text": "Here's a surprise. On HotpotQA, ReAct alone is slightly behind chain-of-thought."
+   },
+   {
+    "t0": 21.349,
+    "t1": 22.778,
+    "text": "On FEVER, it's ahead."
+   },
+   {
+    "t0": 23.098,
+    "t1": 25.615,
+    "text": "And the best scores of all come from combining the two."
+   },
+   {
+    "t0": 26.685,
+    "t1": 28.819,
+    "text": "Why? Because they fail in different ways."
+   },
+   {
+    "t0": 29.139,
+    "t1": 32.317,
+    "text": "More than half of chain-of-thought's failures are made-up facts."
+   },
+   {
+    "t0": 32.637,
+    "t1": 39.549,
+    "text": "For ReAct, that number is zero. Its weak spot is getting stuck, repeating itself, or chasing a useless search."
+   },
+   {
+    "t0": 40.619,
+    "t1": 42.177,
+    "text": "So the authors combine them."
+   },
+   {
+    "t0": 42.497,
+    "t1": 44.225,
+    "text": "Ask chain-of-thought many times."
+   },
+   {
+    "t0": 44.545,
+    "t1": 46.465,
+    "text": "If most answers agree, trust them."
+   },
+   {
+    "t0": 46.785,
+    "t1": 51.393,
+    "text": "If they don't, the model's memory is shaky, so switch to ReAct and go look it up."
+   },
+   {
+    "t0": 52.463,
+    "t1": 56.644,
+    "text": "One more twist. Fine-tune on just three thousand ReAct examples,"
+   },
+   {
+    "t0": 56.964,
+    "t1": 64.409,
+    "text": "and it becomes the best method. A small fine-tuned model beats every prompted method on a model almost eight times bigger."
+   }
+  ]
+ },
+ "decisions": {
+  "src": "assets/audio/react-2210.03629/decisions.mp3",
+  "dur": 54.493,
+  "scenes": [
+   {
+    "start": 0.35,
+    "end": 4.599,
+    "beats": [
+     0.0
+    ]
+   },
+   {
+    "start": 4.599,
+    "end": 14.927,
+    "beats": [
+     0.0,
+     5.376
+    ]
+   },
+   {
+    "start": 14.927,
+    "end": 27.048,
+    "beats": [
+     0.0,
+     1.749,
+     8.533
+    ]
+   },
+   {
+    "start": 27.048,
+    "end": 38.038,
+    "beats": [
+     0.0,
+     5.099
+    ]
+   },
+   {
+    "start": 38.038,
+    "end": 44.889,
+    "beats": [
+     0.0,
+     4.053
+    ]
+   },
+   {
+    "start": 44.889,
+    "end": 54.493,
+    "beats": [
+     0.0,
+     2.453
+    ]
+   }
+  ],
+  "cues": [
+   {
+    "t0": 0.35,
+    "t1": 3.529,
+    "text": "Next, tasks where the model has to act for a long time."
+   },
+   {
+    "t0": 4.599,
+    "t1": 9.655,
+    "text": "ALFWorld is a text game set in a house. Find a pepper shaker, put it in a drawer."
+   },
+   {
+    "t0": 9.975,
+    "t1": 13.857,
+    "text": "WebShop is a shopping website, with over a million real products."
+   },
+   {
+    "t0": 14.927,
+    "t1": 16.357,
+    "text": "Here, thoughts are sparse."
+   },
+   {
+    "t0": 16.677,
+    "t1": 23.141,
+    "text": "One thought makes a plan from common sense: pepper shakers are usually in cabinets, or on countertops."
+   },
+   {
+    "t0": 23.461,
+    "t1": 25.978,
+    "text": "Another marks progress, and picks the next goal."
+   },
+   {
+    "t0": 27.048,
+    "t1": 31.827,
+    "text": "The result: seventy-one percent success, against forty-five for acting alone,"
+   },
+   {
+    "t0": 32.147,
+    "t1": 36.968,
+    "text": "and thirty-seven for an agent trained on a hundred thousand examples per task type."
+   },
+   {
+    "t0": 38.038,
+    "t1": 41.771,
+    "text": "On WebShop, ReAct jumps ten points above the previous best."
+   },
+   {
+    "t0": 42.091,
+    "t1": 43.819,
+    "text": "Humans are still far ahead, though."
+   },
+   {
+    "t0": 44.889,
+    "t1": 47.023,
+    "text": "And just describing the room isn't enough."
+   },
+   {
+    "t0": 47.343,
+    "t1": 53.423,
+    "text": "When thoughts only narrate the environment, success drops to fifty-three. Real reasoning is what helps."
+   }
+  ]
+ },
+ "beyond": {
+  "src": "assets/audio/react-2210.03629/beyond.mp3",
+  "dur": 50.244,
+  "scenes": [
+   {
+    "start": 0.35,
+    "end": 3.788,
+    "beats": [
+     0.0
+    ]
+   },
+   {
+    "start": 3.788,
+    "end": 15.013,
+    "beats": [
+     0.0,
+     3.307,
+     7.872
+    ]
+   },
+   {
+    "start": 15.013,
+    "end": 26.899,
+    "beats": [
+     0.0,
+     2.219,
+     5.653,
+     7.381
+    ]
+   },
+   {
+    "start": 26.899,
+    "end": 40.961,
+    "beats": [
+     0.0,
+     1.323,
+     3.861,
+     7.744
+    ]
+   },
+   {
+    "start": 40.961,
+    "end": 50.244,
+    "beats": [
+     0.0,
+     4.608
+    ]
+   }
+  ],
+  "cues": [
+   {
+    "t0": 0.35,
+    "t1": 2.718,
+    "text": "Finally, the parts that don't fit in a table."
+   },
+   {
+    "t0": 3.788,
+    "t1": 6.775,
+    "text": "Because thoughts are plain text, a human can edit them."
+   },
+   {
+    "t0": 7.095,
+    "t1": 11.34,
+    "text": "Delete one wrong sentence, add a hint, and the agent finishes the task."
+   },
+   {
+    "t0": 11.66,
+    "t1": 13.943,
+    "text": "Two edits, instead of dozens of actions."
+   },
+   {
+    "t0": 15.013,
+    "t1": 16.911,
+    "text": "Acting also keeps answers fresh."
+   },
+   {
+    "t0": 17.231,
+    "t1": 20.346,
+    "text": "In one question, the dataset's answer was out of date."
+   },
+   {
+    "t0": 20.666,
+    "t1": 22.074,
+    "text": "Only ReAct searched,"
+   },
+   {
+    "t0": 22.394,
+    "t1": 25.829,
+    "text": "and found the current one. The benchmark marked it wrong anyway."
+   },
+   {
+    "t0": 26.899,
+    "t1": 27.901,
+    "text": "There are limits."
+   },
+   {
+    "t0": 28.221,
+    "t1": 30.44,
+    "text": "Prompts can only hold so many examples."
+   },
+   {
+    "t0": 30.76,
+    "t1": 34.323,
+    "text": "Fully trained systems still score higher on question answering."
+   },
+   {
+    "t0": 34.643,
+    "t1": 39.891,
+    "text": "And an agent that can act can also do harm, so the authors kept it in safe sandboxes."
+   },
+   {
+    "t0": 40.961,
+    "t1": 45.249,
+    "text": "The whole paper fits in one line: let models think, and act, in turns."
+   },
+   {
+    "t0": 45.569,
+    "t1": 49.174,
+    "text": "You'll recognise that loop in many of the AI agents built since."
+   }
+  ]
+ }
+}
