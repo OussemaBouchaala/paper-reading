@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paperwalk: guided paper reading</title>
+<meta name="description" content="Read research papers step by step: plain-language explanations, replayable examples, quick checks and a glossary.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#start" aria-label="Paperwalk home">
+    <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><path d="M7 4h13l6 6v18H7z" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/><path d="M20 4v6h6" fill="none" stroke="var(--ink)" stroke-width="2"/><circle cx="12" cy="17" r="2.4" fill="var(--teal)"/><circle cx="20" cy="21" r="2.4" fill="var(--claret)"/><path d="M13.8 18.4l4.4 1.6" stroke="var(--ink)" stroke-width="1.6"/></svg>
+    <span>Paperwalk</span>
+  </a>
+  <div class="meter" aria-label="Reading progress"><div class="meter-bar"><i id="pbar"></i></div><span id="ptext">0%</span></div>
+  <div class="tools">
+    <span class="xp" id="xp" title="Points: 5 per step read, 15 per check right first time">0 pts</span>
+    <button class="btn ghost" id="glossBtn" aria-haspopup="dialog">Glossary</button>
+  </div>
+</header>
+
+<main id="app" aria-live="polite"><p class="loading">Loading paper…</p></main>
+
+<div id="drawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="glossTitle" hidden>
+  <div class="drawer-in">
+    <div class="drawer-head"><h2 id="glossTitle">Glossary</h2><button class="btn ghost" id="glossClose" aria-label="Close glossary">Close</button></div>
+    <input id="glossSearch" type="search" placeholder="Search terms" aria-label="Search glossary">
+    <dl id="glossList"></dl>
+  </div>
+</div>
+<div id="pop" class="pop" role="tooltip" hidden></div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

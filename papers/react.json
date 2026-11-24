@@ -1,0 +1,503 @@
+{
+  "id": "react-2210.03629",
+  "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+  "short": "ReAct",
+  "venue": "ICLR 2023",
+  "authors": "Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, Yuan Cao",
+  "affil": "Princeton University and Google Research",
+  "link": "https://arxiv.org/abs/2210.03629",
+  "oneLiner": "Let a language model think out loud <b>and</b> take actions, in turns, so each one makes the other better.",
+  "why": "Most AI agents you meet today (chat assistants that search, coding agents that run tools) follow the loop this paper popularised: think, act, look at the result, think again.",
+  "minutes": 35,
+  "chapters": [
+    {
+      "id": "idea",
+      "title": "The big idea",
+      "sub": "Abstract and Introduction",
+      "pages": "pp. 1–3",
+      "minutes": 5,
+      "steps": [
+        {
+          "t": "text",
+          "h": "Start in a kitchen",
+          "body": "You are cooking. Between actions you talk to yourself: <i>“everything is cut, now heat the water”</i>, <i>“no salt, so I'll use soy sauce”</i>, <i>“how do I make dough? Let me search it”</i>. And you act to feed that thinking: you open the fridge, read the recipe.<br><br>The paper's opening claim is that this tight back-and-forth between <b>reasoning</b> and <b>acting</b> is exactly what lets humans learn fast and cope with surprises.",
+          "src": { "where": "Introduction, p. 1", "quote": "This tight synergy between “acting” and “reasoning” allows humans to learn new tasks quickly and perform robust decision making or reasoning, even under previously unseen circumstances or facing information uncertainties." }
+        },
+        {
+          "t": "text",
+          "h": "Two camps that never met",
+          "body": "In 2022, {{LLMs|llm}} were studied in two separate ways:<ul><li><b>Reasoning only.</b> {{Chain-of-thought|cot}} prompting makes the model write its steps before answering. But it only uses what's already in its head, so it can confidently invent facts ({{hallucination}}) and one wrong step poisons the rest ({{error propagation|errprop}}).</li><li><b>Acting only.</b> Models that output actions (click, search, go to the kitchen) but never stop to think about the goal or keep track of progress.</li></ul>",
+          "src": { "where": "Introduction, p. 2", "quote": "this “chain-of-thought” reasoning is a static black box, in that the model uses its own internal representations to generate thoughts and is not grounded in the external world" }
+        },
+        {
+          "t": "predict",
+          "q": "Before reading on: what do you think ReAct does?",
+          "options": [
+            "Trains a new, bigger model that is better at reasoning",
+            "Prompts a model to alternate between written thoughts and actions",
+            "Adds a search engine in front of the model and skips reasoning",
+            "Lets a human approve every action the model takes"
+          ],
+          "answer": 1,
+          "why": "ReAct is a prompting method. A frozen model is shown a few examples of interleaved <b>Thought → Action → Observation</b> steps and simply continues that pattern on new tasks. No new model is trained for the main results."
+        },
+        {
+          "t": "text",
+          "h": "The synergy, in two directions",
+          "body": "<div class=\"duo\"><div><b>Reason to act</b><br>Thoughts make, track and adjust a plan: “I need to search X, then find Y.”</div><div><b>Act to reason</b><br>Actions fetch fresh facts from outside (Wikipedia, a game, a shop) so the thinking stays grounded.</div></div>",
+          "src": { "where": "Introduction, p. 2", "quote": "allows the model to perform dynamic reasoning to create, maintain, and adjust high-level plans for acting (reason to act), while also interact with the external environments (e.g. Wikipedia) to incorporate additional information into reasoning (act to reason)." }
+        },
+        {
+          "t": "text",
+          "h": "The headline results",
+          "body": "Tested on four benchmarks:<ul><li>{{HotpotQA|hotpotqa}} and {{FEVER|fever}} (answer questions, check facts) with a tiny Wikipedia tool: fewer hallucinations than chain-of-thought, and more readable.</li><li>{{ALFWorld|alfworld}} (a text household game) and {{WebShop|webshop}} (online shopping): beats {{imitation learning|il}} and {{reinforcement learning|rl}} systems by <b>+34</b> and <b>+10</b> points of {{success rate|sr}}, using only one or two examples in the prompt.</li></ul>",
+          "src": { "where": "Abstract, p. 1", "quote": "ReAct outperforms imitation and reinforcement learning methods by an absolute success rate of 34% and 10% respectively, while being prompted with only one or two in-context examples." }
+        },
+        {
+          "t": "quiz",
+          "q": "Which weakness of chain-of-thought does ReAct mainly target?",
+          "options": [
+            "It is too slow to run",
+            "It can't reach outside facts, so it hallucinates and errors snowball",
+            "It needs thousands of training examples",
+            "It only works in English"
+          ],
+          "answer": 1,
+          "why": "CoT reasons from internal knowledge only. ReAct's actions bring in external, checkable information."
+        }
+      ],
+      "keys": [
+        "ReAct = prompt a model to interleave Thoughts and Actions, and feed back Observations.",
+        "Reasoning alone hallucinates; acting alone gets lost. Together they cover each other's gaps.",
+        "Big wins on interactive tasks: +34 points on ALFWorld, +10 on WebShop, with 1–2 examples."
+      ]
+    },
+    {
+      "id": "method",
+      "title": "How ReAct works",
+      "sub": "Section 2",
+      "pages": "pp. 3–4",
+      "minutes": 6,
+      "steps": [
+        {
+          "t": "text",
+          "h": "An agent in a loop",
+          "body": "Picture an agent. At each step <i>t</i> it gets an {{observation}} <i>o<sub>t</sub></i> from the world and picks an action <i>a<sub>t</sub></i>. Its choice depends on the {{context}} so far: everything it has seen and done.<br><br>The hard part: sometimes the right next action needs real thinking over that whole history, and a model that only outputs actions can't do that thinking anywhere.",
+          "src": { "where": "Section 2, p. 3", "quote": "Learning a policy is challenging when the mapping c_t ↦ a_t is highly implicit and requires extensive computation." }
+        },
+        {
+          "t": "text",
+          "h": "The trick is one line of math",
+          "body": "<div class=\"eq\">Â = A ∪ L</div>Take the normal {{action space}} <b>A</b> (search, click, go to…) and add <b>L</b>, the space of all language. An “action” from L is a <b>thought</b>.<br><br>A thought <b>doesn't change the world</b> and gets no observation back. It just gets appended to the context, so later steps can use it. Think of it as a note to self.",
+          "src": { "where": "Section 2, p. 3", "quote": "An action â_t ∈ L in the language space, which we will refer to as a thought or a reasoning trace, does not affect the external environment, thus leading to no observation feedback." }
+        },
+        {
+          "t": "quiz",
+          "q": "What happens in the environment when the model produces a Thought?",
+          "options": [
+            "The environment returns an observation about the thought",
+            "Nothing. The thought is only added to the model's own context",
+            "The thought is sent to a human for review",
+            "The environment resets"
+          ],
+          "answer": 1,
+          "why": "Thoughts are free: they don't touch the world. They only update the context c<sub>t+1</sub> = (c<sub>t</sub>, thought)."
+        },
+        {
+          "t": "match",
+          "h": "What are thoughts for?",
+          "intro": "The paper lists several jobs a thought can do. Tap a thought, then tap its job.",
+          "pairs": [
+            ["“I need to search Apple Remote, then find the program it controls.”", "Break the goal into a plan"],
+            ["“A pepper shaker is more likely in cabinets or on countertops.”", "Inject common sense"],
+            ["“Front Row is not found. I need to search Front Row (software).”", "Handle an exception, adjust the plan"],
+            ["“Now I have the pepper shaker. Next, put it in the drawer.”", "Track progress"],
+            ["“Front Row is controlled by the Apple Remote or keyboard function keys.”", "Extract the key fact from an observation"]
+          ],
+          "src": { "where": "Section 2, p. 3", "quote": "decomposing task goals and create action plans, injecting commonsense knowledge relevant to task solving, extracting important parts from observations, track progress and transit action plans, handle exceptions and adjust action plans, and so on." }
+        },
+        {
+          "t": "text",
+          "h": "No training. Just examples.",
+          "body": "Learning to use “all of language” as actions is hard. So the authors don't train: they take a frozen {{PaLM-540B|palm}} and use {{few-shot prompting|fewshot}}. The prompt holds a handful of human-written {{trajectories|trajectory}} (thoughts, actions, observations) and the model continues the pattern.<br><br>Two styles of thinking:<ul><li><b>Dense</b> for reasoning tasks: Thought, Action, Observation every single step.</li><li><b>Sparse</b> for long decision tasks with many actions: the model decides when a thought is worth writing.</li></ul>",
+          "src": { "where": "Section 2, pp. 3–4", "quote": "for decision making tasks that potentially involve a large number of actions, thoughts only need to appear sparsely in the most relevant positions of a trajectory, so we let the language model decide the asynchronous occurrence of thoughts and actions for itself." }
+        },
+        {
+          "t": "order",
+          "h": "Build one ReAct step",
+          "intro": "Tap the pieces in the order a dense ReAct trajectory produces them.",
+          "items": ["Question arrives", "Thought: plan what to look up", "Action: Search[...]", "Observation: text comes back", "Thought: use what was found", "Action: Finish[answer]"]
+        },
+        {
+          "t": "text",
+          "h": "Four selling points",
+          "body": "<div class=\"grid4\"><div><b>Easy to design</b><br>Annotators just type their thoughts next to their actions.</div><div><b>General</b><br>The same recipe works for QA, fact checking, games and web shopping.</div><div><b>Performant</b><br>Learns from only 1 to 6 examples and beats reason-only or act-only.</div><div><b>Controllable</b><br>Humans can read the thoughts, and even edit them to steer the agent.</div></div>",
+          "src": { "where": "Section 2, p. 4", "quote": "A) Intuitive and easy to design ... B) General and flexible ... C) Performant and robust ... D) Human aligned and controllable" }
+        }
+      ],
+      "keys": [
+        "Augment the action space with language: Â = A ∪ L. A thought changes only the context, never the world.",
+        "Prompting, not training: a frozen PaLM-540B continues a few hand-written trajectories.",
+        "Dense thoughts for reasoning tasks, sparse thoughts for long decision tasks."
+      ]
+    },
+    {
+      "id": "demo",
+      "title": "Watch it think",
+      "sub": "Figure 1, replayed",
+      "pages": "p. 2",
+      "minutes": 6,
+      "steps": [
+        {
+          "t": "predict",
+          "q": "Question: “Aside from the Apple Remote, what other device can control the program Apple Remote was originally designed to interact with?” Which prompting style do you think gets it right?",
+          "options": ["Standard (just answer)", "Chain-of-thought (reason only)", "Act-only (search, no thoughts)", "ReAct (reason + act)"],
+          "answer": 3,
+          "why": "Only ReAct gets it. Replay all four on the next screen to see exactly where each one goes wrong."
+        },
+        {
+          "t": "trace",
+          "h": "Four ways to answer one question",
+          "intro": "Pick a method and press <b>Next step</b> to replay what the model wrote. Teal is thinking, red is acting, grey is what the world sent back.",
+          "question": "Aside from the Apple Remote, what other device can control the program Apple Remote was originally designed to interact with?",
+          "methods": [
+            { "name": "Standard", "ok": false, "verdict": "Wrong. A guess from memory, no reasoning, no lookup.", "steps": [ ["answer", "iPod"] ] },
+            { "name": "Reason only (CoT)", "ok": false, "verdict": "Wrong. The very first reasoning step invents a fact (Apple TV) and everything after it builds on that mistake.", "steps": [
+              ["thought", "Let's think step by step. Apple Remote was originally designed to interact with Apple TV. Apple TV can be controlled by iPhone, iPad, and iPod Touch. So the answer is iPhone, iPad, and iPod Touch."],
+              ["answer", "iPhone, iPad, iPod Touch"] ] },
+            { "name": "Act only", "ok": false, "verdict": "Wrong. It found the right page, but with no thinking it can't pull the answer out of what it read.", "steps": [
+              ["act", "Search[Apple Remote]"],
+              ["obs", "The Apple Remote is a remote control …"],
+              ["act", "Search[Front Row]"],
+              ["obs", "Could not find [Front Row]. Similar: …"],
+              ["act", "Search[Front Row (software)]"],
+              ["obs", "Front Row is a discontinued media center software …"],
+              ["act", "Finish[yes]"] ] },
+            { "name": "ReAct", "ok": true, "verdict": "Right. Each thought aims the next search, each observation corrects the plan, and the last thought pulls out the answer.", "steps": [
+              ["thought", "I need to search Apple Remote and find the program it was originally designed to interact with."],
+              ["act", "Search[Apple Remote]"],
+              ["obs", "The Apple Remote is a remote control introduced in October 2005 by Apple … originally designed to control the Front Row media center program …"],
+              ["thought", "Apple Remote was originally designed to control the Front Row media center program. I need to search Front Row next and find what other device can control it."],
+              ["act", "Search[Front Row]"],
+              ["obs", "Could not find [Front Row]. Similar: ['Front Row Seat to Earth', 'Front Row Motorsports', 'Front Row (software)', …]"],
+              ["thought", "Front Row is not found. I need to search Front Row (software)."],
+              ["act", "Search[Front Row (software)]"],
+              ["obs", "Front Row is a discontinued media center software …"],
+              ["thought", "Front Row (software) is controlled by an Apple Remote or the keyboard function keys. So the answer is keyboard function keys."],
+              ["act", "Finish[keyboard function keys]"] ] }
+          ],
+          "src": { "where": "Figure 1 (1), p. 2", "quote": "Comparison of 4 prompting methods, (a) Standard, (b) Chain-of-thought (CoT, Reason Only), (c) Act-only, and (d) ReAct (Reason+Act), solving a HotpotQA question." }
+        },
+        {
+          "t": "quiz",
+          "q": "In the ReAct run, what did Thought 3 do?",
+          "options": [
+            "Gave the final answer",
+            "Recovered from a failed search by reformulating the query",
+            "Invented a fact about Apple TV",
+            "Asked the user for help"
+          ],
+          "answer": 1,
+          "why": "“Front Row is not found. I need to search Front Row (software).” That is a thought handling an exception, something Act-only can't do explicitly."
+        },
+        {
+          "t": "trace",
+          "h": "Same idea, in a house",
+          "intro": "ALFWorld task: <b>put some pepper shaker on a drawer</b>. Compare acting alone with sparse ReAct thoughts.",
+          "question": "You are in the middle of a room. You see cabinets 1–6, countertops 1–3, a coffee machine, a sinkbasin, a stove burner, a toaster, a drawer … Your task is to: put some pepper shaker on a drawer.",
+          "methods": [
+            { "name": "Act only", "ok": false, "verdict": "Fails. It never works out where a pepper shaker would be, and keeps trying to take one that isn't there.", "steps": [
+              ["act", "Go to drawer 1"],
+              ["obs", "The drawer 1 is closed."],
+              ["act", "Open drawer 1"],
+              ["obs", "You open the drawer 1. In it, you see a dishsponge 2, and a spoon 1."],
+              ["act", "Go to sinkbasin 1"],
+              ["obs", "On the sinkbasin 1, you see a dishsponge 3, a spatula 1, and a spoon 2."],
+              ["act", "Take peppershaker 1 from sinkbasin 1"],
+              ["obs", "Nothing happens."],
+              ["act", "Take peppershaker 1 from sinkbasin 1"],
+              ["obs", "Nothing happens."] ] },
+            { "name": "ReAct", "ok": true, "verdict": "Succeeds. One thought makes a search plan from common sense, another marks the subgoal as done and names the next one.", "steps": [
+              ["thought", "First I need to find a pepper shaker. A pepper shaker is more likely to appear in cabinets (1–6), countertops (1–3), …"],
+              ["act", "Go to cabinet 1"],
+              ["obs", "On the cabinet 1, you see a vase 2."],
+              ["note", "The agent checks cabinets 2 and 3, then countertops 1 and 2."],
+              ["act", "Go to countertop 3"],
+              ["obs", "On the countertop 3, you see an apple 1, a bread 1, … a pepper shaker 1, and a vase 3."],
+              ["act", "Take pepper shaker 1 from countertop 3"],
+              ["obs", "You pick up the pepper shaker 1 from the countertop 3."],
+              ["thought", "Now I find a pepper shaker 1. Next, I need to put it in/on drawer 1."],
+              ["act", "Go to drawer 1"],
+              ["obs", "Drawer 1 is closed."],
+              ["act", "Open drawer 1"],
+              ["obs", "You open Drawer 1 …"],
+              ["act", "Put pepper shaker 1 in/on drawer 1"],
+              ["obs", "You put pepper shaker 1 in/on the drawer 1."] ] }
+          ],
+          "src": { "where": "Figure 1 (2), p. 2", "quote": "the agent shown in Figure 1(2a) fails to comprehend from the context that sinkbasin 1 does not contain peppershaker 1, thus keep producing hallucinating actions." }
+        },
+        {
+          "t": "quiz",
+          "q": "Why are the ALFWorld thoughts “sparse”?",
+          "options": [
+            "The model ran out of tokens",
+            "The task needs many actions, so thoughts only appear where they help",
+            "Thoughts are not allowed in games",
+            "The authors removed them to save cost"
+          ],
+          "answer": 1,
+          "why": "Decision tasks have long action sequences. The model decides when to think, usually at the start (plan) and when a subgoal is done."
+        }
+      ],
+      "keys": [
+        "CoT fails by hallucinating a fact early. Act-only fails by not reasoning over what it found.",
+        "ReAct thoughts aim the next action; observations correct the next thought.",
+        "In games, a few well-placed thoughts (plan, progress, common sense) are enough."
+      ]
+    },
+    {
+      "id": "knowledge",
+      "title": "Questions and fact checking",
+      "sub": "Section 3",
+      "pages": "pp. 4–6",
+      "minutes": 8,
+      "steps": [
+        {
+          "t": "text",
+          "h": "The setup: a deliberately weak Wikipedia",
+          "body": "Two datasets: {{HotpotQA|hotpotqa}} (questions needing 2+ Wikipedia pages) and {{FEVER|fever}} (is this claim supported, refuted, or unknown?). The model gets only the question, no supporting text.<br><br>It can use three actions:<div class=\"chips\"><span>search[entity]</span><span>lookup[string]</span><span>finish[answer]</span></div>search returns the first 5 sentences of a page (or 5 similar titles), lookup is like Ctrl+F. This tool is intentionally much weaker than real retrievers, to force the model to search by reasoning, like a person would.",
+          "src": { "where": "Section 3.1, p. 4", "quote": "The purpose is to simulate how humans would interact with Wikipedia, and force models to retrieve via explicit reasoning in language." }
+        },
+        {
+          "t": "text",
+          "h": "The contenders",
+          "body": "All baselines are cut out of the same ReAct examples, so the comparison is fair ({{ablation}}):<ul><li><b>Standard</b>: remove thoughts, actions, observations. Just answer.</li><li><b>CoT</b>: keep thoughts only.</li><li><b>{{CoT-SC|cotsc}}</b>: sample 21 CoT answers and take the majority vote.</li><li><b>Act</b>: keep actions and observations, remove thoughts.</li></ul>",
+          "src": { "where": "Section 3.2, p. 5", "quote": "We systematically ablate ReAct trajectories to build prompts for multiple baselines" }
+        },
+        {
+          "t": "predict",
+          "q": "On HotpotQA, does ReAct beat plain chain-of-thought?",
+          "options": ["Yes, by a lot", "Yes, slightly", "No, it's slightly behind", "No, by a lot"],
+          "answer": 2,
+          "why": "A surprise: ReAct scores 27.4 vs CoT 29.4 on HotpotQA. It wins on FEVER (60.9 vs 56.3). The next steps explain why, and how to get the best of both."
+        },
+        {
+          "t": "bars",
+          "h": "Table 1: prompting results (PaLM-540B)",
+          "intro": "Higher is better. HotpotQA uses {{exact match|em}}, FEVER uses accuracy.",
+          "groups": [
+            { "label": "HotpotQA (EM)", "max": 70, "rows": [["Standard", 28.7], ["CoT", 29.4], ["CoT-SC", 33.4], ["Act", 25.7], ["ReAct", 27.4, 1], ["CoT-SC → ReAct", 34.2, 1], ["ReAct → CoT-SC", 35.1, 1], ["Supervised SoTA", 67.5, 2]] },
+            { "label": "FEVER (accuracy)", "max": 90, "rows": [["Standard", 57.1], ["CoT", 56.3], ["CoT-SC", 60.4], ["Act", 58.9], ["ReAct", 60.9, 1], ["CoT-SC → ReAct", 64.6, 1], ["ReAct → CoT-SC", 62.0, 1], ["Supervised SoTA", 89.5, 2]] }
+          ],
+          "note": "Supervised SoTA is a fully trained system, shown for scale. All prompting methods are still far below it.",
+          "src": { "where": "Table 1, p. 5", "quote": "PaLM-540B prompting results on HotpotQA and Fever." }
+        },
+        {
+          "t": "bars",
+          "h": "Table 2: why ReAct and CoT fail differently",
+          "intro": "Humans labelled 200 HotpotQA runs. Look at the two red flags.",
+          "groups": [
+            { "label": "Among correct answers", "max": 100, "rows": [["ReAct: truly correct", 94, 1], ["CoT: truly correct", 86], ["ReAct: right by luck (hallucinated)", 6, 1], ["CoT: right by luck (hallucinated)", 14]] },
+            { "label": "Among failures", "max": 100, "rows": [["ReAct: reasoning error", 47, 1], ["CoT: reasoning error", 16], ["ReAct: unhelpful search", 23, 1], ["ReAct: hallucination", 0, 1], ["CoT: hallucination", 56], ["ReAct: label ambiguity", 29, 1], ["CoT: label ambiguity", 28]] }
+          ],
+          "note": "Hallucination is CoT's main failure (56%). ReAct's is getting stuck: reasoning errors, often repeating the same thought and action in a loop.",
+          "src": { "where": "Table 2 and Section 3.3, p. 6", "quote": "Hallucination is a serious problem for CoT, resulting in much higher false positive rate than ReAct (14% vs. 6%) in success mode, and make up its major failure mode (56%)." }
+        },
+        {
+          "t": "quiz",
+          "q": "What is ReAct's typical failure on HotpotQA?",
+          "options": [
+            "It hallucinates facts",
+            "It loops, repeating previous thoughts and actions, or gets derailed by a useless search",
+            "It refuses to answer",
+            "It answers too quickly"
+          ],
+          "answer": 1,
+          "why": "Grounding kills hallucination (0%), but the rigid think-act-observe structure makes it less flexible. Non-informative searches (23%) and loops are its weak spots."
+        },
+        {
+          "t": "text",
+          "h": "Best of both: switch when unsure",
+          "body": "CoT is good at structuring reasoning; ReAct is good at facts. So combine them with simple rules:<ul><li><b>ReAct → CoT-SC</b>: if ReAct hasn't answered within 7 steps (HotpotQA) or 5 (FEVER), fall back to CoT-SC.</li><li><b>CoT-SC → ReAct</b>: if the majority answer among the <i>n</i> CoT samples gets fewer than <i>n</i>/2 votes (the model isn't confident in its own knowledge), switch to ReAct.</li></ul>These hybrids are the best prompting methods in the table, and they match CoT-SC's 21-sample score using only 3–5 samples.",
+          "src": { "where": "Sections 3.2–3.3, pp. 5–6", "quote": "they both significantly and consistently outperform CoT-SC across different number of samples, reaching CoT-SC performance with 21 samples using merely 3-5 samples." }
+        },
+        {
+          "t": "text",
+          "h": "Plot twist: fine-tuning",
+          "body": "With smaller models (PaLM-8B and 62B) and prompting only, ReAct is the <b>worst</b> of the four methods: learning to reason and act from a few examples is hard.<br><br>But {{fine-tune|finetune}} them on just 3,000 correct ReAct trajectories and ReAct becomes the <b>best</b>. Fine-tuned 8B ReAct beats every 62B prompting method, and fine-tuned 62B ReAct beats every 540B prompting method.<br><br>Why: fine-tuning on Standard/CoT teaches the model to memorise facts. Fine-tuning on ReAct teaches a skill, how to look things up, which generalises.",
+          "src": { "where": "Section 3.3 and Figure 3, pp. 6–7", "quote": "the former essentially teaches models to memorize (potentially halluincated) knowledge facts, and the latter teaches models how to (reason and) act to access information from Wikipedia, a more generalizable skill for knowledge reasoning." }
+        },
+        {
+          "t": "quiz",
+          "q": "When does the CoT-SC → ReAct hybrid hand over to ReAct?",
+          "options": [
+            "After 7 steps",
+            "When the CoT samples disagree (majority under n/2)",
+            "Always, after CoT finishes",
+            "When Wikipedia search fails"
+          ],
+          "answer": 1,
+          "why": "Low agreement among sampled answers signals the model's internal knowledge is shaky, so it's time to go look things up."
+        }
+      ],
+      "keys": [
+        "On HotpotQA, ReAct alone slightly trails CoT (27.4 vs 29.4) but wins on FEVER (60.9 vs 56.3).",
+        "CoT fails by hallucinating (56% of failures); ReAct fails by looping or bad searches, and hallucinates almost never.",
+        "Hybrids that switch between ReAct and CoT-SC are the best prompting methods.",
+        "Fine-tuned on 3,000 trajectories, ReAct becomes the best method, even at small model sizes."
+      ]
+    },
+    {
+      "id": "decisions",
+      "title": "Games and shopping",
+      "sub": "Section 4",
+      "pages": "pp. 7–8",
+      "minutes": 6,
+      "steps": [
+        {
+          "t": "text",
+          "h": "Two long, messy environments",
+          "body": "<div class=\"duo\"><div><b>{{ALFWorld|alfworld}}</b><br>A text game set in a house. 6 task types like “examine paper under desklamp”. 50+ locations and 50+ expert steps per task. Common sense helps: lamps are usually on desks.</div><div><b>{{WebShop|webshop}}</b><br>A shopping site with 1.18M real products. “A nightstand with drawers, nickel finish, under $140.” Search, click, choose options, buy.</div></div>",
+          "src": { "where": "Section 4, p. 7", "quote": "both of which feature complex environments that require agents to act over long horizons with sparse rewards, warranting the need for reasoning to act and explore effectively." }
+        },
+        {
+          "t": "text",
+          "h": "A fair fight",
+          "body": "ReAct and Act use the <b>exact same</b> example trajectories, Act just has the thoughts deleted. For ALFWorld, 6 prompt variants per task type, to check results aren't a fluke of one prompt.<br><br>The trained baselines are heavyweight: {{BUTLER|butler}} learned from 10<sup>5</sup> expert trajectories per task type. On WebShop, imitation learning used 1,012 human demos, plus 10,587 instructions for the RL version.",
+          "src": { "where": "Section 4, p. 7", "quote": "since task instances are randomly chosen from the training set, it favors neither ReAct nor Act and provides a fair and controlled comparison to test the importance of sparse thoughts." }
+        },
+        {
+          "t": "predict",
+          "q": "ALFWorld: best Act prompt gets 45% success. What do you think the <i>worst</i> of the six ReAct prompts gets?",
+          "options": ["About 25%", "About 37%", "About 48%", "About 71%"],
+          "answer": 2,
+          "why": "48%. Even the worst ReAct prompt beats the best Act prompt and BUTLER (37%). The best ReAct prompt reaches 71%."
+        },
+        {
+          "t": "bars",
+          "h": "Results: success rate (%)",
+          "groups": [
+            { "label": "ALFWorld, all tasks (Table 3)", "max": 100, "rows": [["BUTLER (best of 8)", 37, 2], ["Act (best of 6)", 45], ["ReAct-IM (best of 6)", 53], ["ReAct (average)", 57, 1], ["ReAct (best of 6)", 71, 1]] },
+            { "label": "WebShop (Table 4)", "max": 100, "rows": [["IL + RL", 28.7, 2], ["IL", 29.1, 2], ["Act", 30.1], ["ReAct", 40.0, 1], ["Human expert", 59.6, 2]] }
+          ],
+          "note": "WebShop success = the bought product meets every requirement. Humans still lead by a wide margin: they explore more products and rephrase searches more.",
+          "src": { "where": "Tables 3 and 4, p. 8", "quote": "On ALFWorld, the best ReAct trial achieves an average success rate of 71%, significantly outperforming the best Act (45%) and BUTLER (37%) trials." }
+        },
+        {
+          "t": "text",
+          "h": "Not just any inner voice",
+          "body": "The closest earlier work, {{Inner Monologue|im}}, also fed text back into the agent. But its “monologue” only described the environment and what was left to do.<br><br>The authors tested that style (<b>ReAct-IM</b>): 53% vs ReAct's 71%. It struggled to know when a subgoal was finished, what to do next, and where items were likely to be. The missing ingredients were high-level goal breakdown and common-sense reasoning, exactly what free-form thoughts provide.",
+          "src": { "where": "Section 4, p. 8", "quote": "ReAct substantially outperforms IM-style prompting (ReAct-IM) (71 vs. 53 overall success rate), with consistent advantages on five out of six tasks." }
+        },
+        {
+          "t": "quiz",
+          "q": "What does the ReAct-IM experiment show?",
+          "options": [
+            "Any text feedback works as well as reasoning",
+            "Flexible reasoning (plans, common sense) matters, not just describing the environment",
+            "Inner Monologue is better than ReAct",
+            "Thoughts hurt performance in games"
+          ],
+          "answer": 1,
+          "why": "Describing the state isn't enough. The gain comes from thoughts that decompose goals and apply common sense."
+        }
+      ],
+      "keys": [
+        "ALFWorld: ReAct 71% vs Act 45% vs BUTLER 37%. Even the worst ReAct prompt (48%) beats them.",
+        "WebShop: ReAct 40% success vs ~29–30% for IL, IL+RL and Act. Humans: 59.6%.",
+        "Free-form reasoning beats IM-style state descriptions (71 vs 53)."
+      ]
+    },
+    {
+      "id": "beyond",
+      "title": "Beyond the scores",
+      "sub": "Appendix A, Conclusion, Ethics",
+      "pages": "pp. 9–15",
+      "minutes": 4,
+      "steps": [
+        {
+          "t": "text",
+          "h": "You can edit its mind",
+          "body": "Because thoughts are plain text, a human can fix them. In one ALFWorld run (task: put two keychains in a safe), ReAct wrongly “remembered” the second keychain was in the drawer and kept failing.<br><br>A human deleted that hallucinated sentence in one thought and added a hint in another (“more likely to appear in dresser, garbage can, safe…”). The agent went straight to the dresser and finished the task. Editing two thoughts replaced typing dozens of actions.",
+          "src": { "where": "Appendix A.3 and Figure 5, pp. 14–15", "quote": "by simply removing a hallucinating sentence in Act 17 and adding some hints in Act 23, ReAct can be made to change its behavior drastically to align with these human thought edits and succeed in the task." }
+        },
+        {
+          "t": "text",
+          "h": "Sometimes the “wrong” answer is right",
+          "body": "One HotpotQA question asked how many rooms a Las Vegas hotel has. The dataset's label was outdated: the hotel had grown. Standard and CoT hallucinated, Act got lost, and only ReAct searched its way to the current number. It was marked wrong by the benchmark, and was right in the real world.",
+          "src": { "where": "Appendix A.2 and Figure 4, p. 14", "quote": "Only ReAct is able to retrieve up-to-date information from the Internet and provide a reasonable answer." }
+        },
+        {
+          "t": "bars",
+          "h": "Not a PaLM-only trick",
+          "intro": "ReAct prompting with GPT-3 (text-davinci-002) vs PaLM-540B.",
+          "groups": [
+            { "label": "HotpotQA, 500-question sample (EM)", "max": 100, "rows": [["PaLM-540B", 29.4], ["GPT-3", 30.8, 1]] },
+            { "label": "ALFWorld (success %)", "max": 100, "rows": [["PaLM-540B", 70.9], ["GPT-3", 78.4, 1]] }
+          ],
+          "src": { "where": "Appendix A.1, Table 5, p. 14", "quote": "This indicates ReAct prompting is effective across different large language models on different tasks." }
+        },
+        {
+          "t": "text",
+          "h": "Limits and risks",
+          "body": "<ul><li><b>Context length.</b> Complex tasks need more examples than fit in a prompt.</li><li><b>Still far from trained SoTA</b> on QA, and far from humans on WebShop.</li><li><b>Real-world actions are risky.</b> An agent that can act could look up private data or do harm. The authors limited it to Wikipedia and a fake shop where nothing is really bought.</li></ul>Their suggested next steps: more human-written training data, multi-task training, and combining ReAct with reinforcement learning.",
+          "src": { "where": "Conclusion and Ethics Statement, pp. 9–10", "quote": "hooking up a large language model with an action space to interact with external environments (e.g. the web, physical environments) has potential dangers" }
+        },
+        {
+          "t": "quiz",
+          "q": "Why is editing a thought more powerful than editing an action?",
+          "options": [
+            "Thoughts are shorter",
+            "A thought changes the agent's plan and beliefs, so every later action follows",
+            "Actions can't be edited at all",
+            "Editing thoughts retrains the model"
+          ],
+          "answer": 1,
+          "why": "Changing one action fixes one step. Changing a thought changes the context the model reasons from, so the rest of its behaviour shifts with it, with no retraining."
+        },
+        {
+          "t": "quiz",
+          "q": "Final check. Which sentence best sums up ReAct?",
+          "options": [
+            "A bigger model trained on Wikipedia",
+            "Chain-of-thought with a majority vote",
+            "Interleaving thoughts and tool actions in the prompt, so reasoning guides actions and observations ground reasoning",
+            "A reinforcement learning agent for text games"
+          ],
+          "answer": 2,
+          "why": "That's the whole paper in one line."
+        }
+      ],
+      "keys": [
+        "Readable thoughts make the agent steerable: edit a thought, change the behaviour.",
+        "Acting lets the model get up-to-date facts that a static dataset or memory can't.",
+        "Works with GPT-3 too. Main limits: prompt length, gap to trained systems, and safety of real actions."
+      ]
+    }
+  ],
+  "glossary": {
+    "llm": ["Large language model (LLM)", "A neural network trained on huge amounts of text to predict the next word. Here: PaLM-540B and GPT-3."],
+    "cot": ["Chain-of-thought (CoT)", "Prompting the model to write out its reasoning step by step before answering (Wei et al., 2022). Reasoning only, no access to the outside world."],
+    "cotsc": ["CoT-SC (self-consistency)", "Sample many chain-of-thought answers (21 in this paper, temperature 0.7) and keep the most common final answer."],
+    "hallucination": ["Hallucination", "When a model states something false as if it were fact, because it is generating plausible text rather than checking."],
+    "errprop": ["Error propagation", "One wrong step early in a reasoning chain makes every later step that relies on it wrong too."],
+    "fewshot": ["Few-shot prompting", "Putting a handful of solved examples in the prompt so the model copies the pattern on a new input. No weights change."],
+    "trajectory": ["Trajectory", "The full record of one attempt at a task: every thought, action and observation, in order."],
+    "observation": ["Observation", "What the environment sends back after an action, such as a Wikipedia snippet or “Nothing happens.”"],
+    "context": ["Context", "Everything the agent has seen and done so far in this task. The model reads it to choose the next step."],
+    "action space": ["Action space", "The set of all actions an agent is allowed to take, such as search[ ], lookup[ ], finish[ ] or ‘go to cabinet 1’."],
+    "palm": ["PaLM-540B", "Google's 540-billion-parameter language model, used frozen (no training) for the main experiments."],
+    "hotpotqa": ["HotpotQA", "A question-answering benchmark where each question needs facts from two or more Wikipedia pages (multi-hop)."],
+    "fever": ["FEVER", "A fact-verification benchmark: label a claim SUPPORTS, REFUTES or NOT ENOUGH INFO based on Wikipedia."],
+    "alfworld": ["ALFWorld", "A text-based game simulating a household. The agent reads descriptions and types actions to complete chores."],
+    "webshop": ["WebShop", "A simulated shopping website with 1.18M real Amazon products and 12k human shopping instructions."],
+    "em": ["Exact match (EM)", "The answer counts only if it matches the reference answer exactly (after normalisation)."],
+    "sr": ["Success rate", "Share of episodes where the agent fully completes the task."],
+    "il": ["Imitation learning (IL)", "Training an agent to copy expert demonstrations."],
+    "rl": ["Reinforcement learning (RL)", "Training an agent by trial and error with rewards."],
+    "finetune": ["Fine-tuning", "Continuing to train a model's weights on a small task-specific dataset."],
+    "ablation": ["Ablation", "Removing one ingredient (here: thoughts, or actions) to measure how much it matters."],
+    "butler": ["BUTLER", "An imitation-learning agent for ALFWorld trained on 100,000 expert trajectories per task type."],
+    "im": ["Inner Monologue (IM)", "Prior work (Huang et al., 2022) where environment feedback is injected as text into a robot planner. Closed-loop, but no free-form reasoning."]
+  }
+}
