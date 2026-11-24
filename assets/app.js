@@ -165,9 +165,8 @@ function home() {
         <div class="foot">${AUD[c.id] ? `<span class="chip">${ICO.play} ${fmt(AUD[c.id].dur)} video</span>` : '<span></span>'}${ring(chSeen(c) / steps(c).length)}</div></a>`).join('')}
         <a class="bx wide" href="#recap"><span class="no">Finish</span><h3>Recap and cheat sheet</h3><p>Everything you learned, on one page.</p><div class="foot"><span class="chip" style="background:var(--abg);color:var(--act)">${S.pts} pts</span>${ring(Object.keys(S.seen).length / total())}</div></a>
       </div>
-      <p class="note">This PoC ships with one paper. Every stop is generated from one data file, so more papers can plug in. <button class="linkbtn" id="reset">Reset my progress</button></p>
+      <p class="note">This PoC ships with one paper. Every stop is generated from one data file, so more papers can plug in.</p>
     </section></div>`;
-  $('#reset').onclick = () => { S = blank(); save(); updateMeter(); home(); };
   $$('[data-start]').forEach(a => a.onclick = () => { S.pos[a.dataset.start] = 0; save(); sessionStorage.setItem('autoplay', '1'); });
   $$('.bx').forEach(b => b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.setProperty('--mx', e.clientX - r.left + 'px'); b.style.setProperty('--my', e.clientY - r.top + 'px'); }));
   animateHero(token);
@@ -436,10 +435,39 @@ cin.onkeydown = e => {
   if (e.key === 'Enter') { e.preventDefault(); pick(); }
 };
 
+/* ---------- theme switch ---------- */
+const SUN = 'M12 4V2M12 22v-2M4 12H2M22 12h-2M5.6 5.6L4.2 4.2M19.8 19.8l-1.4-1.4M5.6 18.4l-1.4 1.4M19.8 4.2l-1.4 1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z';
+const MOON = 'M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z';
+function applyTheme(t, persist) {
+  document.documentElement.dataset.theme = t;
+  $('#themeIc').setAttribute('d', t === 'dark' ? SUN : MOON);
+  const lbl = t === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+  $('#themeBtn').setAttribute('aria-label', lbl); $('#themeBtn').title = lbl;
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'dark' ? '#07090d' : '#f5f7fa');
+  if (persist) try { localStorage.setItem('paperwalk-theme', t); } catch {}
+}
+applyTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+$('#themeBtn').onclick = () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark', true);
+matchMedia('(prefers-color-scheme: light)').addEventListener?.('change', e => { let saved = null; try { saved = localStorage.getItem('paperwalk-theme'); } catch {} if (!saved) applyTheme(e.matches ? 'light' : 'dark'); });
+
+/* ---------- reset progress ---------- */
+const dlg = $('#resetDlg');
+const closeDlg = () => { dlg.hidden = true; $('#resetBtn').focus(); };
+$('#resetBtn').onclick = () => { dlg.hidden = false; $('#rCancel').focus(); if (G && !reduce) G.from('.dlg', { y: -10, scale: .98, opacity: 0, duration: .25, ease: 'power3.out' }); };
+$('#rCancel').onclick = closeDlg;
+dlg.onclick = e => { if (e.target === dlg) closeDlg(); };
+$('#rOk').onclick = () => {
+  if (!P) return closeDlg();
+  S = blank(); save(); dlg.hidden = true; updateMeter();
+  location.hash === '#start' || location.hash === '' ? route() : (location.hash = 'start');
+  toast('<b>Reset.</b> Starting fresh');
+};
+
 /* ---------- keys and routing ---------- */
 document.addEventListener('keydown', e => {
   if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !/input|textarea/i.test(e.target.tagName))) { e.preventDefault(); return cmd.hidden ? openCmd() : closeCmd(); }
-  if (e.key === 'Escape') { closeCmd(); pop.hidden = true; return; }
+  if (e.key === 'Escape') { closeCmd(); pop.hidden = true; if (!dlg.hidden) closeDlg(); return; }
+  if (!dlg.hidden) return;
   if (!cur || !location.hash.startsWith('#ch-') || /input|textarea/i.test(e.target.tagName) || !cmd.hidden) return;
   if (e.key === ' ' && player && !e.target.closest('button,a,.vp')) { e.preventDefault(); return player.toggle(); }
   if (e.key === 'ArrowRight') $('#next')?.click();

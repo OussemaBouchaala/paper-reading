@@ -6,6 +6,7 @@
 <title>Paperwalk: guided paper reading</title>
 <meta name="description" content="Read research papers the easy way: narrated explainer videos, animated diagrams, replayable examples, quick checks and a glossary.">
 <meta name="theme-color" content="#07090d">
+<script>try{var t=localStorage.getItem('paperwalk-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='dark'}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -21,6 +22,8 @@
   <div class="meter" aria-label="Reading progress"><div class="meter-bar"><i id="pbar"></i></div><span id="ptext">0%</span></div>
   <div class="tools">
     <span class="xp" id="xp" title="5 points per step, 15 per check right first time">0 pts</span>
+    <button class="ibtn" id="resetBtn" aria-label="Reset progress" title="Reset progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>
+    <button class="ibtn" id="themeBtn" aria-label="Switch theme" title="Switch theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path id="themeIc" d=""/></svg></button>
     <button class="kbtn" id="cmdBtn" aria-haspopup="dialog"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Search</span><kbd>Ctrl K</kbd></button>
   </div>
 </header>
@@ -32,6 +35,13 @@
     <input id="cmdInput" type="search" placeholder="Jump to a section, or look up a term…" aria-label="Search" autocomplete="off">
     <ul id="cmdList" role="listbox"></ul>
     <div class="cmd-foot"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>Enter</kbd> open</span><span><kbd>Esc</kbd> close</span></div>
+  </div>
+</div>
+<div id="resetDlg" class="cmd" role="alertdialog" aria-modal="true" aria-labelledby="rTitle" aria-describedby="rText" hidden>
+  <div class="cmd-in dlg">
+    <h2 id="rTitle">Reset your progress?</h2>
+    <p id="rText">This clears the steps you've read, your answers and your points in this browser. It can't be undone.</p>
+    <div class="dlg-act"><button class="btn ghost" id="rCancel">Cancel</button><button class="btn danger" id="rOk">Reset progress</button></div>
   </div>
 </div>
 <div id="pop" class="pop" role="tooltip" hidden></div>
