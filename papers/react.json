@@ -9,6 +9,7 @@
   "oneLiner": "Let a language model think out loud <b>and</b> take actions, in turns, so each one makes the other better.",
   "why": "Most AI agents you meet today (chat assistants that search, coding agents that run tools) follow the loop this paper popularised: think, act, look at the result, think again.",
   "minutes": 35,
+  "films": "react.films.json",
   "chapters": [
     {
       "id": "idea",
@@ -158,7 +159,7 @@
         {
           "t": "trace",
           "h": "Four ways to answer one question",
-          "intro": "Pick a method and press <b>Next step</b> to replay what the model wrote. Teal is thinking, red is acting, grey is what the world sent back.",
+          "intro": "Pick a method and press <b>Next step</b> to replay what the model wrote. Teal is thinking, pink is acting, amber is what the world sent back.",
           "question": "Aside from the Apple Remote, what other device can control the program Apple Remote was originally designed to interact with?",
           "methods": [
             { "name": "Standard", "ok": false, "verdict": "Wrong. A guess from memory, no reasoning, no lookup.", "steps": [ ["answer", "iPod"] ] },

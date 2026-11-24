@@ -28,4 +28,11 @@ Vercel: import the repo (framework preset "Other", no build command, output dire
   `match`, `order`. Every step can carry `src` (where in the paper + a direct quote).
 - In step text, `{{term}}` or `{{label|key}}` links to a glossary entry.
 
+## Films
+
+Each stop has a short narrated motion-graphic film, rendered live in the browser (no video files).
+Scenes live in `papers/<id>.films.json`, keyed by chapter id, and the paper points to that file with `"films"`.
+Scene types: `title`, `split`, `loop`, `flow`, `bars`, `trace`, `eq`, `stat`, `bullets`, `cards`; each has a `say` line.
+The voice-over uses the browser's built-in speech voices, so it sounds different on each device. Captions always show.
+
 The next step is to generate these JSON files automatically from an uploaded PDF.

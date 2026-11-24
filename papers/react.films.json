@@ -1,0 +1,551 @@
+{
+ "idea": [
+  {
+   "type": "title",
+   "kicker": "Stop 1 · The big idea",
+   "title": "Think, then act, then look.",
+   "sub": "ReAct, ICLR 2023",
+   "say": "Here is the big idea of ReAct, in about a minute."
+  },
+  {
+   "type": "split",
+   "left": {
+    "title": "Reasoning only",
+    "color": "think",
+    "items": [
+     "Writes its steps",
+     "Uses only memory",
+     "Invents facts"
+    ]
+   },
+   "right": {
+    "title": "Acting only",
+    "color": "act",
+    "items": [
+     "Searches and clicks",
+     "Gets real facts",
+     "Loses the plot"
+    ]
+   },
+   "say": "In 2022, language models were studied in two separate ways. Some only reasoned: they wrote out their steps, but used only what was in their heads, so they sometimes invented facts. Others only acted: they searched and clicked, but never stopped to think about what they found."
+  },
+  {
+   "type": "loop",
+   "nodes": [
+    [
+     "Thought",
+     "a note to self",
+     "think"
+    ],
+    [
+     "Action",
+     "touches the world",
+     "act"
+    ],
+    [
+     "Observation",
+     "the world replies",
+     "obs"
+    ]
+   ],
+   "center": "repeat until Finish",
+   "say": "ReAct joins the two. The model writes a thought, takes an action, reads what comes back, and thinks again. Round and round, until it can answer."
+  },
+  {
+   "type": "flow",
+   "nodes": [
+    [
+     "Reason",
+     "plans the next move",
+     "think"
+    ],
+    [
+     "Act",
+     "fetches fresh facts",
+     "act"
+    ],
+    [
+     "Reason better",
+     "grounded in reality",
+     "think"
+    ]
+   ],
+   "say": "Thinking makes the actions smarter. And acting keeps the thinking honest, because every new fact comes from the outside world."
+  },
+  {
+   "type": "stat",
+   "value": 34,
+   "prefix": "+",
+   "suffix": " pts",
+   "label": "success on ALFWorld, from just one or two examples",
+   "say": "The result: on a household game called ALFWorld, ReAct beat the best other methods by thirty four points, after seeing only one or two examples."
+  }
+ ],
+ "method": [
+  {
+   "type": "title",
+   "kicker": "Stop 2 · How it works",
+   "title": "One line of math.",
+   "sub": "Section 2",
+   "say": "How does ReAct actually work? It comes down to one small idea."
+  },
+  {
+   "type": "eq",
+   "eq": "Â = A ∪ L",
+   "parts": [
+    [
+     "A",
+     "normal actions: search, click, go to",
+     "act"
+    ],
+    [
+     "L",
+     "all of language: a thought",
+     "think"
+    ]
+   ],
+   "say": "Take the normal list of actions, like search or click. Then add one more kind of action: any sentence at all. That sentence is a thought."
+  },
+  {
+   "type": "split",
+   "left": {
+    "title": "An action",
+    "color": "act",
+    "items": [
+     "Changes the world",
+     "Gets an observation back"
+    ]
+   },
+   "right": {
+    "title": "A thought",
+    "color": "think",
+    "items": [
+     "Changes nothing outside",
+     "Only updates the context"
+    ]
+   },
+   "say": "An action changes the world, and the world answers. A thought changes nothing outside. It just gets added to the model's notes, so the next step is better informed."
+  },
+  {
+   "type": "flow",
+   "nodes": [
+    [
+     "A few examples",
+     "written by people",
+     "obs"
+    ],
+    [
+     "Frozen model",
+     "PaLM 540B, no training",
+     "think"
+    ],
+    [
+     "Continues the pattern",
+     "thought, action, observation",
+     "act"
+    ]
+   ],
+   "say": "And there is no training. The authors write a handful of example runs by hand, put them in the prompt, and a frozen model simply continues the pattern."
+  },
+  {
+   "type": "bullets",
+   "title": "Thoughts can…",
+   "items": [
+    "break a goal into steps",
+    "pull out the key fact",
+    "use common sense",
+    "track progress",
+    "fix a plan that failed"
+   ],
+   "say": "Those thoughts do many jobs. They break a goal into steps, pick out the key fact, add common sense, track progress, and fix the plan when something goes wrong."
+  }
+ ],
+ "demo": [
+  {
+   "type": "title",
+   "kicker": "Stop 3 · Watch it think",
+   "title": "One question, two minds.",
+   "sub": "Figure 1, replayed",
+   "say": "Let's watch it work on a real question from the paper."
+  },
+  {
+   "type": "trace",
+   "title": "Chain of thought",
+   "lines": [
+    [
+     "thought",
+     "Apple Remote was originally designed to interact with Apple TV."
+    ],
+    [
+     "thought",
+     "Apple TV can be controlled by iPhone, iPad, and iPod Touch."
+    ],
+    [
+     "answer",
+     "iPhone, iPad, iPod Touch"
+    ]
+   ],
+   "ok": false,
+   "say": "The question asks what other device can control the program the Apple Remote was made for. Reasoning alone answers from memory. It guesses the Apple TV, and gets it wrong."
+  },
+  {
+   "type": "trace",
+   "title": "ReAct",
+   "lines": [
+    [
+     "thought",
+     "I need to search Apple Remote and find the program it was designed for."
+    ],
+    [
+     "act",
+     "Search[Apple Remote]"
+    ],
+    [
+     "obs",
+     "…originally designed to control the Front Row media center program…"
+    ],
+    [
+     "thought",
+     "I need to search Front Row next."
+    ],
+    [
+     "act",
+     "Search[Front Row]"
+    ],
+    [
+     "obs",
+     "Could not find [Front Row]. Similar: Front Row (software)…"
+    ],
+    [
+     "thought",
+     "Not found. I need to search Front Row (software)."
+    ],
+    [
+     "act",
+     "Search[Front Row (software)]"
+    ],
+    [
+     "thought",
+     "It is controlled by an Apple Remote or the keyboard function keys."
+    ],
+    [
+     "act",
+     "Finish[keyboard function keys]"
+    ]
+   ],
+   "ok": true,
+   "say": "ReAct thinks first, then searches. It learns the remote was built for a program called Front Row. Its next search fails, so it reads the hint and corrects itself. Then it finds the answer: the keyboard function keys. Correct."
+  },
+  {
+   "type": "split",
+   "left": {
+    "title": "Thought",
+    "color": "think",
+    "items": [
+     "aims the next action"
+    ]
+   },
+   "right": {
+    "title": "Observation",
+    "color": "obs",
+    "items": [
+     "corrects the next thought"
+    ]
+   },
+   "say": "That is the whole trick. Each thought aims the next action, and each observation corrects the next thought."
+  }
+ ],
+ "knowledge": [
+  {
+   "type": "title",
+   "kicker": "Stop 4 · Questions & fact checking",
+   "title": "A deliberately weak Wikipedia.",
+   "sub": "Section 3",
+   "say": "Now the experiments on questions and fact checking."
+  },
+  {
+   "type": "flow",
+   "nodes": [
+    [
+     "search[entity]",
+     "first sentences of a page",
+     "act"
+    ],
+    [
+     "lookup[string]",
+     "next sentence with the word",
+     "act"
+    ],
+    [
+     "finish[answer]",
+     "stop and answer",
+     "think"
+    ]
+   ],
+   "say": "The model gets only three simple tools on Wikipedia: search for a page, look up a word inside it, and finish with an answer."
+  },
+  {
+   "type": "bars",
+   "title": "FEVER fact checking · accuracy",
+   "max": 70,
+   "rows": [
+    [
+     "Standard",
+     57.1,
+     0
+    ],
+    [
+     "Chain of thought",
+     56.3,
+     0
+    ],
+    [
+     "Act only",
+     58.9,
+     0
+    ],
+    [
+     "ReAct",
+     60.9,
+     1
+    ],
+    [
+     "ReAct + CoT-SC",
+     64.6,
+     1
+    ]
+   ],
+   "say": "On fact checking, ReAct beats chain of thought. And a hybrid, which switches between the two when unsure, does best of all."
+  },
+  {
+   "type": "bars",
+   "title": "Why runs fail · share of failures",
+   "max": 60,
+   "unit": "%",
+   "rows": [
+    [
+     "CoT: hallucination",
+     56,
+     0
+    ],
+    [
+     "ReAct: hallucination",
+     0,
+     1
+    ],
+    [
+     "ReAct: reasoning error, often loops",
+     47,
+     1
+    ],
+    [
+     "ReAct: unhelpful search",
+     23,
+     1
+    ]
+   ],
+   "say": "The failures tell the real story. More than half of chain of thought failures come from made-up facts. ReAct almost never makes things up. It fails differently: by reasoning errors like going in loops, or by unhelpful searches."
+  },
+  {
+   "type": "stat",
+   "value": 3000,
+   "suffix": "",
+   "label": "trajectories to fine-tune small models, and ReAct becomes the best method",
+   "say": "And with fine-tuning on just three thousand examples, even small models running ReAct become the best of all."
+  }
+ ],
+ "decisions": [
+  {
+   "type": "title",
+   "kicker": "Stop 5 · Games & shopping",
+   "title": "Long, messy worlds.",
+   "sub": "Section 4",
+   "say": "Next, two long and messy environments: a house, and a shop."
+  },
+  {
+   "type": "split",
+   "left": {
+    "title": "ALFWorld",
+    "color": "think",
+    "items": [
+     "A text game in a house",
+     "50+ steps per task",
+     "Common sense helps"
+    ]
+   },
+   "right": {
+    "title": "WebShop",
+    "color": "act",
+    "items": [
+     "1.18 million real products",
+     "Messy, noisy text",
+     "Find what the user wants"
+    ]
+   },
+   "say": "ALFWorld is a text game set in a house, with more than fifty steps per task. WebShop is a shopping site with more than a million real products."
+  },
+  {
+   "type": "bars",
+   "title": "ALFWorld · success rate",
+   "max": 100,
+   "unit": "%",
+   "rows": [
+    [
+     "BUTLER (trained)",
+     37,
+     0
+    ],
+    [
+     "Act only",
+     45,
+     0
+    ],
+    [
+     "ReAct (worst prompt)",
+     48,
+     1
+    ],
+    [
+     "ReAct",
+     71,
+     1
+    ]
+   ],
+   "say": "In the house, ReAct succeeds seventy one percent of the time. Acting alone gets forty five. And even ReAct's worst prompt beats every other method."
+  },
+  {
+   "type": "bars",
+   "title": "WebShop · success rate",
+   "max": 100,
+   "unit": "%",
+   "rows": [
+    [
+     "Imitation learning",
+     29.1,
+     0
+    ],
+    [
+     "IL + RL",
+     28.7,
+     0
+    ],
+    [
+     "Act only",
+     30.1,
+     0
+    ],
+    [
+     "ReAct",
+     40,
+     1
+    ],
+    [
+     "Human experts",
+     59.6,
+     2
+    ]
+   ],
+   "say": "In the shop, ReAct reaches forty percent, ten points above trained systems. Humans are still well ahead, at almost sixty."
+  },
+  {
+   "type": "split",
+   "left": {
+    "title": "Inner Monologue",
+    "color": "obs",
+    "items": [
+     "describes the scene",
+     "53% success"
+    ]
+   },
+   "right": {
+    "title": "ReAct thoughts",
+    "color": "think",
+    "items": [
+     "plan, track, reason",
+     "71% success"
+    ]
+   },
+   "say": "And it's not just any inner voice. Thoughts that only describe the scene reach fifty three percent. Free reasoning reaches seventy one."
+  }
+ ],
+ "beyond": [
+  {
+   "type": "title",
+   "kicker": "Stop 6 · Beyond the scores",
+   "title": "A mind you can edit.",
+   "sub": "Appendix, Conclusion, Ethics",
+   "say": "Finally, what this means beyond the numbers."
+  },
+  {
+   "type": "flow",
+   "nodes": [
+    [
+     "Wrong thought",
+     "keychain is in the drawer",
+     "act"
+    ],
+    [
+     "Human edits it",
+     "one sentence changed",
+     "obs"
+    ],
+    [
+     "Task solved",
+     "behaviour follows",
+     "think"
+    ]
+   ],
+   "say": "Because thoughts are plain text, a person can read and fix them. In one run, a human deleted one wrong sentence, and the agent went on to finish the task."
+  },
+  {
+   "type": "cards",
+   "items": [
+    [
+     "Up to date",
+     "Acting finds facts newer than the training data"
+    ],
+    [
+     "Readable",
+     "You can see why it did what it did"
+    ],
+    [
+     "Steerable",
+     "Edit a thought, change the behaviour"
+    ]
+   ],
+   "say": "Acting means the model can find facts that are newer than its training. And readable thoughts mean you can see, and steer, what it is doing."
+  },
+  {
+   "type": "bullets",
+   "title": "Limits",
+   "items": [
+    "Prompts get long",
+    "Still behind trained systems on QA",
+    "Real-world actions can be risky"
+   ],
+   "say": "There are limits. Prompts get long, it still trails fully trained systems on some tasks, and an agent that can act in the real world needs care."
+  },
+  {
+   "type": "loop",
+   "nodes": [
+    [
+     "Thought",
+     "",
+     "think"
+    ],
+    [
+     "Action",
+     "",
+     "act"
+    ],
+    [
+     "Observation",
+     "",
+     "obs"
+    ]
+   ],
+   "center": "the loop behind today's agents",
+   "say": "But the loop it introduced, think, act, observe, is now behind most AI agents you use today."
+  }
+ ]
+}
